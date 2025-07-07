@@ -35,7 +35,7 @@ void* consumer_func(void*) {
 
 int main() {
     sem_init(&sem, 0, 0);  // Init with 0 => locked
-    sem_init(&sem1, 5, 1);  // Init with 0 => locked
+    sem_init(&sem1, 5, 1);  // Init with 1 => unlocked
 
     pthread_t producer;
     pthread_create(&producer, NULL, producer_func, NULL);
