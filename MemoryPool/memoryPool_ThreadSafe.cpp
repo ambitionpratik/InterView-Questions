@@ -2,6 +2,7 @@
 #include <mutex>
 #include <vector>
 #include <cstdlib>
+#include <thread>
 
 class ThreadSafeMemoryPool {
     struct Block {
@@ -9,7 +10,7 @@ class ThreadSafeMemoryPool {
     };
 
     Block* freeList = nullptr;
-    std::vector<void*> allocations;
+    void* pool;
     size_t blockSize;
     size_t blockCount;
     std::mutex mtx;
@@ -17,8 +18,7 @@ class ThreadSafeMemoryPool {
 public:
     ThreadSafeMemoryPool(size_t blockSize, size_t blockCount)
         : blockSize(blockSize > sizeof(Block*) ? blockSize : sizeof(Block*)), blockCount(blockCount) {
-        void* pool = std::malloc(blockSize * blockCount);
-        allocations.push_back(pool);
+        pool = std::malloc(blockSize * blockCount);
 
         // Initialize free list
         freeList = nullptr;
@@ -48,13 +48,9 @@ public:
     }
 
     ~ThreadSafeMemoryPool() {
-        for (void* mem : allocations) {
-            std::free(mem);
-        }
+        std::free(pool);
     }
 };
-
-#include <thread>
 
 struct MyObject {
     int x, y;
