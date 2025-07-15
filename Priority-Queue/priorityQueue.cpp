@@ -41,11 +41,13 @@ void AddTask() {
 
         unique_lock<mutex> lock(m);
 
-        tasks.insert(make_pair(now_seconds + randomNumber, [now_seconds, randomNumber]() {
-            cout << "----------" << endl;
-            cout << "Task executed on " << now_seconds + randomNumber << " seconds..." << endl;
-            cout << "----------" << endl << endl;
-            }));
+        for (auto i{ 0 }; i < randomNumber; ++i) {
+            tasks.insert(make_pair(now_seconds + randomNumber, [now_seconds, randomNumber]() {
+                cout << "----------" << endl;
+                cout << "Task executed on " << now_seconds + randomNumber << " seconds..." << endl;
+                cout << "----------" << endl << endl;
+                }));
+        }
 
         lock.unlock();
 
